@@ -23,23 +23,37 @@ alumnos = {
     
 }
 
-
-
 def buscar():
     print("Ingrese un DNI para verificar")
     while True:
-         dni=input("Por favor ingrese un DNI ")
-         if dni in alumnos:
-             mostrar_alumno(dni)
-             break
-         else:
-             print("Dni no asociado a alumno")
-             obtener_datos(dni)
-             break
-    
+        try:
+            dni =input("Por favor ingrese un DNI: ")
+            dni_int=int(dni)   
+            if dni_int > 0: 
+                if dni in alumnos:
+                    mostrar_alumno(dni)
+                    break
+                else:
+                    print("DNI no encontrado. ¿Desea agregarlo?")
+                    rta = input("Ingrese (S) para agregar o (N) para salir: ")
+                    if rta.upper() == "S":
+                        obtener_datos(dni)
+                        break
+                    elif rta.upper() == "N":
+                        print("Operación cancelada.")
+                        buscar()
+                        break
+                    else:
+                        print("Opción no válida. Intente de nuevo.")
+            else:
+                raise ValueError("Debe ingresar un número positivo de DNI válido.")
+        except ValueError as error:
+            print("Debe ingresar un número de DNI válido.")
+            print("Codigo de error :",error)
     
 def ABM_alumnos(dni):
     while True:
+        
         mod=input("Elija que accion realizar ")
         if mod.upper()=="M":
             modificar_alumnos(dni)
@@ -76,118 +90,234 @@ def modificar_alumnos(dni):
     
     if editor.upper() == "NOMBRE":
         while True:
-            nuevo_nombre = input("Ingrese nuevo nombre:   ")
-            if not nuevo_nombre.isnumeric():
-                break
-            else:
-                print("Por favor ingrese texto ")
-                
-        if nuevo_nombre:
-            alumno["Nombre"] = nuevo_nombre.upper()
-            print("Nuevo nombre es", alumno["Nombre"])
-            print("")
-            modificar_alumnos(dni)   
-        else:
-            print("No se ha ingresado un nombre se mantiene el mismo ")
-            print("")
-            modificar_alumnos(dni)
-   
+            try:
+                nuevo_nombre = input("Ingrese nuevo nombre: ")
+                if nuevo_nombre.strip() == "":  
+                    break
+                if nuevo_nombre.isalpha(): 
+                    alumno["Nombre"] = nuevo_nombre.upper()
+                    print("Nuevo nombre es", alumno["Nombre"])
+                    print("")
+                    mostrar_alumno(dni)
+                    break
+                else:
+                    raise ValueError("Por favor ingrese un nombre válido.")
+            except ValueError as error:
+                print(error)
+        if not nuevo_nombre.strip():
+            print("Se mantiene el mismo")
+            mostrar_alumno(dni)
+
     elif editor.upper() == "APELLIDO":
         while True:
-            nuevo_apellido=input("Ingrese nuevo Apellido")
-            if not nuevo_apellido.isnumeric():
-                break
-            else:
-                print("Por favor ingrese texto ")
-        nuevo_apellido=input("Ingrese nuevo Apellido")
-        if nuevo_apellido:
-            alumno["Apellido"]= nuevo_apellido.upper()    
-            print("El nuevo apelido es ",alumno["Apellido"])  
-            print("")  
-            modificar_alumnos(dni)
-        else:
+            try:
+                nuevo_apellido=input("Ingrese nuevo Apellido")
+                if nuevo_apellido.strip()=="":
+                    break
+                if nuevo_apellido.isalpha:
+                    alumno["Apellido"]= nuevo_apellido.upper()
+                    print("El nuevo apelido es ",alumno["Apellido"])  
+                    print("")  
+                    mostrar_alumno(dni)
+                    break
+                else:
+                    raise ValueError("Por favor ingrese un Apellido valido")
+            except ValueError as error:
+                print(error)    
+                 
+        if not nuevo_apellido.strip():
             print("No se ha ingresado un Apellido se mantiene el mismo")
             print("")
-            modificar_alumnos(dni)
+            mostrar_alumno(dni)
                   
     elif editor.upper() == "FECHA DE NACIMIENTO":
+        #Dia 
+        while True:
+            try:
+                dia = input("Ingrese DIA de nacimiento: ")
+                if dia.strip()=="":
+                    break
+                if dia.isnumeric():
+                    dia = int(dia)
+                    if dia > 0 and dia <= 31:
+                        print("Día válido:", dia)
+                        break
+                    else:
+                        raise ValueError("El día debe estar entre 1 y 31. ")
+                else:
+                    raise ValueError("Ingrese un número entero para el día.")
+            except ValueError as error:
+                print(error)
+        if not dia.strip():
+            print("Se mantiene el mismo")
+        while True:
+            try:
+                mes = input("Ingrese MES de nacimiento: ")
+                if mes.strip()=="":
+                    break
+                if mes.isnumeric():
+                    mes = int(mes)
+                    if mes >0 and mes <=12:
+                        print("Mes válido:", mes)
+                        break
+                    else:
+                        raise ValueError("El MES debe estar entre 1 y 12. ")
+                else:
+                    raise ValueError("Ingrese un número entero para el mes.")
+            except ValueError as error:
+                print(error)
+        if not mes.strip():
+            print("Se mantiene el mismo")
         
-        new_fecha_nac=input("Ingrese nueva fecha de nacimiento (dd/mm/aaaa): ")
+        while True:
+            try:
+                año = input("Ingrese AÑO de nacimiento: ")
+                if año.strip()=="":
+                    break
+                if año.isnumeric():
+                    año = int(año)
+                    if año > 1980 and año <= 2020:#En este caso puse un rango asi porque los alumnos pueden variar, pero como para no exagerar les deje esos limite
+                        print("Año válido:", año)
+                        break
+                    else:
+                        raise ValueError("El Año debe estar entre 1970 y 2020. ")
+                else:
+                    raise ValueError("Ingrese un número entero para el Año.")
+            except ValueError as error:
+                print(error)    
+        if not año.strip():
+            print("Se mantiene el mismo")     
+                 
+        new_fecha_nac=dia,mes,año
         if new_fecha_nac:
-            alumno["Fecha de nacimiento"]= new_fecha_nac.upper()
+            alumno["Fecha de nacimiento"]= new_fecha_nac
             print("Nueva fecha de nacimiento ",alumno["Fecha de nacimiento"])
             print("")
             modificar_alumnos(dni)
-        else:
-            print("No se ha ingresado una fecha se mantiene la misma")
-            print("")
-            modificar_alumnos(dni)
+    
                
-    elif editor.upper() == "DNI": 
-        try:
-            new_dni=int(input("Ingrese nuevo DNI "))
-        except ValueError:
-            print("Error por favor ingrese numero enteros /No se modifico dni")
-            print("")
-            modificar_alumnos(dni)
-        if new_dni:
-            alumno["DNI"]=new_dni
-            print("Nuevo DNI es ",alumno["DNI"])
-            print("")
-            modificar_alumnos(dni)
-                             
-    elif editor.upper() == "TUTOR": 
-        new_tutor=input("Ingrese el nuevo  nombre del tutor")
-        if new_tutor:
-            alumno["Tutor"]=new_tutor.upper()
-            print("Nombre del tutor es ",new_tutor)
-            print("")
-            modificar_alumnos(dni)
-        else:
-            print("No se ha ingresado un tutor se mantiene la misma")
-            print("")
-            modificar_alumnos(dni)
+    elif editor.upper() == "DNI":
+        while True:
+            try:
                 
-    elif editor.upper() == "NOTAS": 
-        new_nota=int(input("Ingrese nueva nota"))
-        if new_nota:
-            alumno["Notas"].append(new_nota)
-            print("Nueva nota asignada",alumno["Notas"])
-            print("")
-            modificar_alumnos(dni)
-        else:
-            print("No se asigno nota")
-            print("")
+                new_dni=input("Ingrese DNI")
+                if new_dni.strip()=="":
+                    break
+                if new_dni.isnumeric():
+                    alumno["DNI"]=new_dni
+                    print("Dni valido es ",alumno["DNI"])
+                    mostrar_alumno(dni)
+                    break
+                else:
+                    raise ValueError("Ingrese un dato valido")    
+            except ValueError as error:
+                print(error)            
+        if not new_dni.strip():
+            print("Se mantiene")  
             mostrar_alumno(dni)    
-        
+             
+    elif editor.upper() == "TUTOR":
+        #NOMBRE DE TUTOR
+        while True:
+            try:
+                new_nombre_tutor = input("Ingrese nuevo nombre :  ")
+                if new_nombre_tutor.strip() == "":  
+                    break
+                if new_nombre_tutor.isalpha(): 
+                    new_nombre_tutor=new_nombre_tutor
+                    print("Nuevo nombre Tutor es", new_nombre_tutor)
+                    print("")
+                    break
+                else:
+                    raise ValueError("Por favor ingrese un nombre válido.")
+            except ValueError as error:
+                print(error)
+        if not new_nombre_tutor.strip():
+            print("Se mantiene el mismo")
+            mostrar_alumno(dni)
+            
+            
+        #APELLIDO DE TUTOR   
+        while True:
+            try:
+                new_apellido_tutor = input("Ingrese nuevo Apellido :  ")
+                if new_apellido_tutor.strip() == "":  
+                    break
+                if new_apellidotutor.isalpha(): 
+                    new_apellidotutor=new_apellido_tutor
+                    print("Nuevo Apellido Tutor es", new_apellido_tutor)
+                    print("")
+                    break
+                else:
+                    raise ValueError("Por favor ingrese un Apellido válido.")
+            except ValueError as error:
+                print(error)
+        if not new_apellido_tutor.strip():
+            print("Se mantiene el mismo")
+            mostrar_alumno(dni)
+            
+        tutor=new_nombre_tutor,new_apellido_tutor
+        alumno["Tutor"]=tutor
+        print("Nuevo Nombre de Tutor es", alumno["Tutor"])
+                      
+    elif editor.upper() == "NOTAS": 
+        while True:
+            try:
+                new_nota=input("Ingrese Nota")
+                if new_nota.strip()=="":
+                    break
+                if new_nota.isnumeric():
+                    alumno["Nota"]+=new_nota
+                    print("Nota valida : ",alumno["Nota"])
+                    mostrar_alumno(dni)
+                    break
+                else:
+                    raise ValueError("Ingrese un dato valido")    
+            except ValueError as error:
+                print(error)            
+        if not new_nota.strip():
+            print("Se mantiene")  
+            mostrar_alumno(dni)   
+                 
     elif editor.upper() == "FALTAS": 
         print("Faltas actuales",alumno["Faltas"])
-        try:
-            new_falta=int(input("Agregar falta "))
-        except ValueError:
-            print("Error por favor ingrese numero enteros /No se modificaron las faltas")
-            print("")
-            modificar_alumnos(dni)
-        if new_falta:
-            alumno["Faltas"]+=new_falta
-            print("Se agrego falta, faltas actuales : ",alumno["Faltas"])
-            print("")
-            modificar_alumnos(dni) 
+        while True:
+            try:
+                new_falta=input("Ingrese Falta")
+                if new_falta.strip()=="":
+                    break
+                if new_falta.isnumeric():
+                    alumno["Faltas"]=new_falta
+                    print("Nueva Falta  : ",alumno["Faltas"])
+                    mostrar_alumno(dni)
+                    break
+                else:
+                    raise ValueError("Ingrese un dato valido")    
+            except ValueError as error:
+                print(error)            
+        if not new_falta.strip():
+            print("Se mantiene")  
+            mostrar_alumno(dni)   
             
     elif editor.upper() == "AMONESTACIONES": 
         print("Amonestaciones actuales ",alumno["Amonestaciones"])
-        try:
-            new_amones=int(input("Agregar Amonestacion"))
-        except ValueError:
-            print("Error por favor ingrese numero enteros /No se modificaron las Amonestaciones")
-            print("")
-            modificar_alumnos(dni)
-
-        if new_amones:
-            alumno["Amonestaciones"]+=new_amones
-            print("Se agrego Amonestacion,  Amonestacion actuales : ",alumno["Amonestaciones"])
-            print("")
-            modificar_alumnos(dni)
+        while True:
+            try:
+                new_amonestaciones=input("Ingrese Falta")
+                if new_amonestaciones.strip()=="":
+                    break
+                if new_amonestaciones.isnumeric():
+                    alumno["Faltas"]+=new_amonestaciones
+                    print("Nueva amonestacion : ",alumno["Amonestaciones"])
+                    mostrar_alumno(dni)
+                    break
+                else:
+                    raise ValueError("Ingrese un dato valido")    
+            except ValueError as error:
+                print(error)            
+        if not new_amonestaciones.strip():
+            print("Se mantiene")  
+            mostrar_alumno(dni)  
                     
     elif editor.upper()=="S":
         print("Atras")
@@ -199,15 +329,132 @@ def modificar_alumnos(dni):
         modificar_alumnos(dni)    
                
 def obtener_datos(dni):
-#Por cuestiones de tiempo no llegue a agregar exception o opciones en caso de que el usuario ingrese algun datoa erroneo como lo hice en "modificar_alumnos"
-        nombre = input("Ingrese el nombre del alumno: ")
-        apellido = input("Ingrese el apellido del alumno: ")
-        dni = input("Ingrese el DNI del alumno: ")
-        fecha_nacimiento = input("Ingrese la fecha de nacimiento del alumno (dd/mm/aaaa): ")
-        tutor = input("Ingrese el nombre del tutor del alumno: ")
-        nuevo_alumno=carga_datos_alumnos(nombre,apellido,dni,fecha_nacimiento,tutor)
-        alumnos[dni]=nuevo_alumno
-        mostrar_alumno(dni)
+    #nombre
+    while True:
+        try:
+            nombre = input("Ingrese nuevo nombre: ")
+            if nombre.isalpha(): 
+                nombre=nombre
+                break
+            else:
+                raise ValueError("Por favor ingrese un nombre válido.")
+        except ValueError as error:
+                print(error)
+   
+        
+    #apellido
+    while True:
+        try:
+            apellido = input("Ingrese el apellido del alumno: ")
+            if apellido.isalpha():
+                apellido=apellido
+                break
+            else:
+                raise ValueError("Por favor ingrese un apellido valido")   
+        except ValueError as error:
+            print(error)              
+    #DNI
+    while True:
+          try:
+              dni=input("Ingrese DNI")
+              if dni.isnumeric():
+                  dni=dni
+                  break
+              else:
+                  raise ValueError("Ingrese un dato valido")    
+          except ValueError as error:
+              print(error)     
+              
+    #FECHA DE NACIMIENTO           
+    print("Ingrese la fecha de nacimiento del alumno (dd/mm/aaaa): ")
+            #Dia 
+    while True:
+            try:
+                dia = input("Ingrese DIA de nacimiento: ")
+                if dia.isnumeric():
+                    dia = int(dia)
+                    if dia > 0 and dia <= 31:
+                        print("Día válido:", dia)
+                        dia=dia
+                        break
+                    else:
+                        raise ValueError("El día debe estar entre 1 y 31. ")
+                else:
+                    raise ValueError("Ingrese un número entero para el día.")
+            except ValueError as error:
+                print(error)
+    while True:
+            try:
+                mes = input("Ingrese MES de nacimiento: ")
+                if mes.isnumeric():
+                    mes = int(mes)
+                    if mes >0 and mes <=12:
+                        print("Mes válido:", mes)
+                        mes=mes
+                        break
+                    else:
+                        raise ValueError("El MES debe estar entre 1 y 12. ")
+                else:
+                    raise ValueError("Ingrese un número entero para el mes.")
+            except ValueError as error:
+                print(error)
+        
+        
+    while True:
+            try:
+                año = input("Ingrese AÑO de nacimiento: ")
+                if año.isnumeric():
+                    año = int(año)
+                    if año > 1980 and año <= 2020:#En este caso puse un rango asi porque los alumnos pueden variar, pero como para no exagerar les deje esos limite
+                        print("Año válido:", año)
+                        break
+                    else:
+                        raise ValueError("El Año debe estar entre 1970 y 2020. ")
+                else:
+                    raise ValueError("Ingrese un número entero para el Año.")
+            except ValueError as error:
+                print(error)    
+            
+    fecha_nacimiento=dia,mes,año
+    
+    #TUTOR
+    #NOMBRE DE TUTOR
+    print("Ingrese datos del TUTOR ")
+    while True:
+            try:
+                new_nombre_tutor = input("Ingrese  nombre :  ")
+                if new_nombre_tutor.isalpha(): 
+                    new_nombre_tutor=new_nombre_tutor
+                    print("Nuevo nombre Tutor es", new_nombre_tutor)
+                    print("")
+                    break
+                else:
+                    raise ValueError("Por favor ingrese un nombre válido.")
+            except ValueError as error:
+                print(error)
+     
+            
+            
+    #APELLIDO DE TUTOR   
+    
+    while True:
+            try:
+                new_apellido_tutor = input("Ingrese un Apellido :  ")
+                if new_apellido_tutor.isalpha(): 
+                    new_apellido_tutor=new_apellido_tutor
+                    print("Nuevo Apellido Tutor es", new_apellido_tutor)
+                    print("")
+                    break
+                else:
+                    raise ValueError("Por favor ingrese un Apellido válido.")
+            except ValueError as error:
+                print(error)
+        
+            
+    tutor=new_nombre_tutor,new_apellido_tutor 
+    nuevo_alumno=carga_datos_alumnos(nombre,apellido,dni,fecha_nacimiento,tutor)
+    alumnos[dni]=nuevo_alumno
+    mostrar_alumno(dni)
                        
 def carga_datos_alumnos(nombre,apellido,dni,fecha_nacimiento,tutor):
         
