@@ -1,27 +1,21 @@
-alumnos = {
-    "41095372": {
-        "Nombre": "TOMAS",
-        "Apellido": "FARFAN",
-        "Fecha de nacimiento": "13/12/1998",
-        "DNI": "41095372",
-        "Tutor": "NANCY DIAZ",
-        "Notas": [8, 7],
-        "Faltas": 1,
-        "Amonestaciones": 1
-    },
-    "41097377": {
-        "Nombre": "CAMILA",
-        "Apellido": "DIAZ",
-        "Fecha de nacimiento": "28/01/1998",
-        "DNI": "41097377",
-        "Tutor": "MARIA MUSEDA",
-        "Notas": [6, 9],
-        "Faltas": 0,
-        "Amonestaciones": 0
-    },
-    #
-    
-}
+import json
+
+archivos_datos_alumnos = "alumnos.txt"
+
+# Cargar los datos del archivo
+def cargar_datos():
+    try:
+        with open(archivos_datos_alumnos, 'r') as archivo:
+            return json.load(archivo)
+    except FileNotFoundError:
+        return {}
+
+
+def guardar_datos():
+    with open(archivos_datos_alumnos, 'w') as archivo:
+        json.dump(alumnos, archivo, indent=4)
+
+alumnos = cargar_datos()
 
 def buscar():
     print("Ingrese un DNI para verificar")
@@ -98,6 +92,7 @@ def modificar_alumnos(dni):
                     alumno["Nombre"] = nuevo_nombre.upper()
                     print("Nuevo nombre es", alumno["Nombre"])
                     print("")
+                    guardar_datos()  
                     mostrar_alumno(dni)
                     break
                 else:
@@ -118,6 +113,7 @@ def modificar_alumnos(dni):
                     alumno["Apellido"]= nuevo_apellido.upper()
                     print("El nuevo apelido es ",alumno["Apellido"])  
                     print("")  
+                    guardar_datos()  
                     mostrar_alumno(dni)
                     break
                 else:
@@ -193,6 +189,7 @@ def modificar_alumnos(dni):
             alumno["Fecha de nacimiento"]= new_fecha_nac
             print("Nueva fecha de nacimiento ",alumno["Fecha de nacimiento"])
             print("")
+            guardar_datos()  
             modificar_alumnos(dni)
     
                
@@ -206,6 +203,7 @@ def modificar_alumnos(dni):
                 if new_dni.isnumeric():
                     alumno["DNI"]=new_dni
                     print("Dni valido es ",alumno["DNI"])
+                    guardar_datos() 
                     mostrar_alumno(dni)
                     break
                 else:
@@ -243,7 +241,7 @@ def modificar_alumnos(dni):
                 new_apellido_tutor = input("Ingrese nuevo Apellido :  ")
                 if new_apellido_tutor.strip() == "":  
                     break
-                if new_apellidotutor.isalpha(): 
+                if new_apellidotutor.isalpha:
                     new_apellidotutor=new_apellido_tutor
                     print("Nuevo Apellido Tutor es", new_apellido_tutor)
                     print("")
@@ -259,6 +257,7 @@ def modificar_alumnos(dni):
         tutor=new_nombre_tutor,new_apellido_tutor
         alumno["Tutor"]=tutor
         print("Nuevo Nombre de Tutor es", alumno["Tutor"])
+        guardar_datos() 
                       
     elif editor.upper() == "NOTAS": 
         while True:
@@ -269,6 +268,7 @@ def modificar_alumnos(dni):
                 if new_nota.isnumeric():
                     alumno["Nota"]+=new_nota
                     print("Nota valida : ",alumno["Nota"])
+                    guardar_datos() 
                     mostrar_alumno(dni)
                     break
                 else:
@@ -289,6 +289,7 @@ def modificar_alumnos(dni):
                 if new_falta.isnumeric():
                     alumno["Faltas"]=new_falta
                     print("Nueva Falta  : ",alumno["Faltas"])
+                    guardar_datos() 
                     mostrar_alumno(dni)
                     break
                 else:
@@ -309,6 +310,7 @@ def modificar_alumnos(dni):
                 if new_amonestaciones.isnumeric():
                     alumno["Faltas"]+=new_amonestaciones
                     print("Nueva amonestacion : ",alumno["Amonestaciones"])
+                    guardar_datos()  
                     mostrar_alumno(dni)
                     break
                 else:
@@ -426,7 +428,6 @@ def obtener_datos(dni):
                 if new_nombre_tutor.isalpha(): 
                     new_nombre_tutor=new_nombre_tutor
                     print("Nuevo nombre Tutor es", new_nombre_tutor)
-                    print("")
                     break
                 else:
                     raise ValueError("Por favor ingrese un nombre válido.")
@@ -439,7 +440,7 @@ def obtener_datos(dni):
     
     while True:
             try:
-                new_apellido_tutor = input("Ingrese un Apellido :  ")
+                new_apellido_tutor = input("Ingrese  Apellido del tutor :  ")
                 if new_apellido_tutor.isalpha(): 
                     new_apellido_tutor=new_apellido_tutor
                     print("Nuevo Apellido Tutor es", new_apellido_tutor)
@@ -454,6 +455,7 @@ def obtener_datos(dni):
     tutor=new_nombre_tutor,new_apellido_tutor 
     nuevo_alumno=carga_datos_alumnos(nombre,apellido,dni,fecha_nacimiento,tutor)
     alumnos[dni]=nuevo_alumno
+    guardar_datos()  
     mostrar_alumno(dni)
                        
 def carga_datos_alumnos(nombre,apellido,dni,fecha_nacimiento,tutor):
@@ -482,6 +484,7 @@ def eliminar_alumno(dni):
         validar=input("SI/NO")
         if validar.upper()=="SI":
             del alumnos[dni]
+            guardar_datos()  
             print("Usuario eliminado correctamente")
             buscar()
             break
@@ -494,9 +497,4 @@ def eliminar_alumno(dni):
         
 #-------------
 #---------------
-#
 buscar()
-
-        
-        
-
