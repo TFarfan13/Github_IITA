@@ -5,10 +5,7 @@
         "Fecha de nacimiento": "13/12/1998",
         "DNI": "41095372",
         "Tutor": "NANCY DIAZ",
-        "Notas": [
-            8,
-            7
-        ],
+        "Notas": [8, 7],
         "Faltas": 1,
         "Amonestaciones": 1
     },
@@ -18,10 +15,7 @@
         "Fecha de nacimiento": "28/01/1998",
         "DNI": "41097377",
         "Tutor": "MARIA MUSEDA",
-        "Notas": [
-            6,
-            9
-        ],
+        "Notas": [6, 9],
         "Faltas": 0,
         "Amonestaciones": 0
     }
